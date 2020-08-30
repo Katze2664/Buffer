@@ -11,7 +11,10 @@ phosphoric = AcidBase(["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], [0, 0.0246, 0.0
 
 #pKa = [2.14, 7.20, 12.37]
 
-def release(pH_guess, acidbase, protons, printer = 0):
+def release(pH_guess, acidbase, printer = 0):
+    protons = range(len(acidbase.species_names)-1,-1,-1)
+
+
     total_conc = 0
     for i in acidbase.initial_conc:
         total_conc += i
@@ -67,7 +70,7 @@ def pH_calc(H_released, printer = 0):
 def diff(pH_guess, acidBases):
     H_release = 0
     for acidBase in acidBases:
-        H_release += release(pH_guess, acidBase, [3, 2, 1, 0])
+        H_release += release(pH_guess, acidBase)
     pH_calculated = pH_calc(H_release)
     return pH_guess - pH_calculated
 
@@ -102,8 +105,10 @@ def search(precision, acidBases):
     print("Found")
     print("guess", guess)
     print("diff guess", diff_guess)
-#    H_release = release(guess, ["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], initial_conc, pKa, [3, 2, 1, 0], 1)
-#    print("pH calc", pH_calc(H_release))
+    H_release = 0
+    for acidBase in acidBases:
+        H_release += release(guess, acidBase)
+    print("pH calc", pH_calc(H_release))
 
 
 #pH_guess = 5
