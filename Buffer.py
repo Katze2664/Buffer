@@ -67,11 +67,11 @@ def pH_calc(H_released, printer = 0):
         print("pH_calc", pH)
     return float(pH)
 
-def diff(pH_guess, acidBases):
+def diff(pH_guess, acidBases, printer = 0):
     H_release = 0
     for acidBase in acidBases:
         H_release += release(pH_guess, acidBase)
-    pH_calculated = pH_calc(H_release)
+    pH_calculated = pH_calc(H_release, printer)
     return pH_guess - pH_calculated
 
 def search(precision, acidBases):
@@ -105,15 +105,6 @@ def search(precision, acidBases):
     print("Found")
     print("guess", guess)
     print("diff guess", diff_guess)
-    H_release = 0
-    for acidBase in acidBases:
-        H_release += release(guess, acidBase)
-    print("pH calc", pH_calc(H_release))
-
-
-#pH_guess = 5
+    diff(guess, acidBases, 1)
 
 search(0.00001, [phosphoric])
-
-#H_release = release(pH_guess, ["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], [0.1, 0.5, 0.2, 0.3], [2, 7, 12], [3, 2, 1, 0])
-#pH_calc(H_release)
