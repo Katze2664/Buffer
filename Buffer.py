@@ -2,18 +2,42 @@ import math
 from decimal import *
 
 class AcidBase:
-    def __init__(self, species_names, initial_conc, pKa):
+    def __init__(self, species_names, pKa, initial_conc, volume=None, volume_list=None):
         self.species_names = species_names
-        self.initial_conc = initial_conc
         self.pKa = pKa
 
-phosphoric = AcidBase(["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], [0, 0.0246, 0.0754, 0], [2.15, 6.86, 12.32])
+        if volume == None and volume_list == None:
+            print("Error: no volume", self.species_names)
+            exit()
+
+        if volume != None and volume_list != None:
+            print("Error: volume double specified", self.species_names)
+            exit()
+
+        if volume != None:
+            self.volume = volume
+            self.initial_conc = initial_conc
+        else:
+            self.volume = 0
+            for i in volume_list:
+                self.volume += i
+
+            self.initial_conc = []
+            for i in range(len(initial_conc)):
+                self.initial_conc.append(initial_conc[i] * volume_list[i] / self.volume)
+
+        print("initial conc", self.initial_conc)
+        print("volume", self.volume)
+
+
+phosphoric_simple = AcidBase(["H2PO4 -", "HPO4 2-"], [7.21], [0.1, 0.15], volume = 0.6)
+#phosphoric = AcidBase(["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], [2.15, 7.21, 12.32], [0, 0.06, 0.09, 0])
+hydrochloric = AcidBase(["HCl", "Cl-"], [-6.3], [0.2, 0], volume=0.15)
 
 #pKa = [2.14, 7.20, 12.37]
 
 def release(pH_guess, acidbase, printer = 0):
     protons = range(len(acidbase.species_names)-1,-1,-1)
-
 
     total_conc = 0
     for i in acidbase.initial_conc:
@@ -75,7 +99,7 @@ def diff(pH_guess, acidBases, printer = 0):
     return pH_guess - pH_calculated
 
 def search(precision, acidBases):
-    lowerbound = 2
+    lowerbound = 0
     upperbound = 14
 
     while diff(lowerbound, acidBases) > 0:
@@ -107,4 +131,4 @@ def search(precision, acidBases):
     print("diff guess", diff_guess)
     diff(guess, acidBases, 1)
 
-search(0.00001, [phosphoric])
+#search(0.00001, [phosphoric_simple, hydrochloric])
