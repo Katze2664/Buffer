@@ -1,52 +1,70 @@
 import math
 from decimal import *
 
+# You may modify the section below to enter you desired data for calculation.
+
+# Specify the desired precision of the calculation.
+precision = 0.00001
+
+# Enter chemical data in the form of dictionaries.
+phosphoric_dict = {"species_names": ["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"],
+                   "pKa": [2.15, 7.21, 12.32],
+                   "initial_conc": [0, 0.06, 0.09, 0],
+                   "volume": 2,
+                   "volume_list": None}
+
+hydrochloric_dict = {"species_names": ["HCl", "Cl-"],
+                     "pKa": [-6.3],
+                     "initial_conc": [0.2, 0.1],
+                     "volume": None,
+                     "volume_list": [0.5, 0.3]}
+
+# Add each dictionary to this list to include it in the calculation.
+chemical_list = [phosphoric_dict, hydrochloric_dict]
+
+# Do not modify below here.
+
 class AcidBase:
     def __init__(self, species_names, pKa, initial_conc, volume=None, volume_list=None):
         self.species_names = species_names
         self.pKa = pKa
 
-        if volume == None and volume_list == None:
-            print("Error: no volume", self.species_names)
-            exit()
+        if volume == None:
+            if volume_list == None:
+                print("Error: no volume", self.species_names)
+                exit()
+            else:
+                self.volume = 0
+                for i in volume_list:
+                    self.volume += i
 
-        if volume != None and volume_list != None:
-            print("Error: volume double specified", self.species_names)
-            exit()
-
-        if volume != None:
-            self.volume = volume
-            self.initial_conc = initial_conc
+                self.initial_conc = []
+                for i in range(len(initial_conc)):
+                    self.initial_conc.append(initial_conc[i] * volume_list[i] / self.volume)
         else:
-            self.volume = 0
-            for i in volume_list:
-                self.volume += i
-
-            self.initial_conc = []
-            for i in range(len(initial_conc)):
-                self.initial_conc.append(initial_conc[i] * volume_list[i] / self.volume)
-
-        print("initial conc", self.initial_conc)
-        print("volume", self.volume)
+            if volume_list == None:
+                self.volume = volume
+                self.initial_conc = initial_conc
+            else:
+                print("Error: volume double specified", self.species_names)
+                exit()
 
 
-phosphoric_simple = AcidBase(["H2PO4 -", "HPO4 2-"], [7.21], [0.1, 0.15], volume = 0.6)
-#phosphoric = AcidBase(["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"], [2.15, 7.21, 12.32], [0, 0.06, 0.09, 0])
-hydrochloric = AcidBase(["HCl", "Cl-"], [-6.3], [0.2, 0], volume=0.15)
+def release(pH_guess, acidbase, volume_total, printer = 0):
+    protons = range(len(acidbase.species_names)-1, -1, -1)
 
-#pKa = [2.14, 7.20, 12.37]
-
-def release(pH_guess, acidbase, printer = 0):
-    protons = range(len(acidbase.species_names)-1,-1,-1)
+    diluted_conc = []
+    for conc in range(len(acidbase.initial_conc)):
+        diluted_conc.append(conc * acidbase.volume / volume_total)
 
     total_conc = 0
-    for i in acidbase.initial_conc:
+    for i in diluted_conc:
         total_conc += i
     if printer == 1:
         print("total conc", total_conc)
 
     base_acid = []
-    for i in range(len(acidbase.initial_conc) - 1):
+    for i in range(len(diluted_conc) - 1):
         base_acid.append(10**(pH_guess - acidbase.pKa[i]))
     if printer == 1:
         print("base_acid", base_acid)
@@ -70,8 +88,8 @@ def release(pH_guess, acidbase, printer = 0):
         print("equilibrium conc", equilibrium_conc)
 
     diff_conc = []
-    for i in range(len(acidbase.initial_conc)):
-        diff_conc.append(equilibrium_conc[i] - acidbase.initial_conc[i])
+    for i in range(len(diluted_conc)):
+        diff_conc.append(equilibrium_conc[i] - diluted_conc[i])
     if printer == 1:
         print("diff conc", diff_conc)
 
@@ -88,13 +106,17 @@ def pH_calc(H_released, printer = 0):
     H_conc = Decimal(OH_conc) + Decimal(H_released)
     pH = Decimal(-1) * Decimal.log10(Decimal(H_conc))
     if printer == 1:
-        print("pH_calc", pH)
+        print("Calculated pH: ", pH)
     return float(pH)
 
 def diff(pH_guess, acidBases, printer = 0):
+    volume_total = 0
+    for acidBase in acidBases:
+        volume_total += acidBase.volume
+
     H_release = 0
     for acidBase in acidBases:
-        H_release += release(pH_guess, acidBase)
+        H_release += release(pH_guess, acidBase, volume_total)
     pH_calculated = pH_calc(H_release, printer)
     return pH_guess - pH_calculated
 
@@ -126,9 +148,13 @@ def search(precision, acidBases):
         guess = upperbound - (diff_upper / gradient)
         diff_guess = diff(guess, acidBases)
 
-    print("Found")
-    print("guess", guess)
-    print("diff guess", diff_guess)
-    diff(guess, acidBases, 1)
 
-#search(0.00001, [phosphoric_simple, hydrochloric])
+    diff(guess, acidBases, 1)
+    print("Precision error: ", diff_guess)
+
+acidbase_list = []
+for chem_dict in chemical_list:
+    acidbase = AcidBase(chem_dict["species_names"], chem_dict["pKa"], chem_dict["initial_conc"], chem_dict["volume"], chem_dict["volume_list"])
+    acidbase_list.append(acidbase)
+
+search(precision, acidbase_list)
