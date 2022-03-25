@@ -7,10 +7,17 @@ from decimal import *
 precision = 0.00001
 
 # Enter chemical data in the form of dictionaries.
+# "species_names" (list[str]) contains names for the conjugate acids and bases in a series of deprotonations
+# "pKa" (list[float]) contains literature pKa values for each deprotonation step
+# "initial_conc" (list[float]) contains concentrations (in molar) for each chemical in "species_names"
+# "volume" (float) contains the total volume of solution (in litres)
+# "volume_list" (list[float]) contains the volume (in litres) of each chemical in "species_names"
+# use "volume" or "volume_list" but not both. Leave the used one as None
+
 phosphoric_dict = {"species_names": ["H3PO4", "H2PO4 -", "HPO4 2-", "PO4 3-"],
                    "pKa": [2.15, 7.21, 12.32],
                    "initial_conc": [0, 0.06, 0.09, 0],
-                   "volume": 2,
+                   "volume": 1.5,
                    "volume_list": None}
 
 hydrochloric_dict = {"species_names": ["HCl", "Cl-"],
@@ -20,6 +27,7 @@ hydrochloric_dict = {"species_names": ["HCl", "Cl-"],
                      "volume_list": [0.5, 0.3]}
 
 # Add each dictionary to this list to include it in the calculation.
+# pH will be calculated for the final solution created by mixing all chemicals in this list.
 chemical_list = [phosphoric_dict, hydrochloric_dict]
 
 # Do not modify below here.
