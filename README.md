@@ -18,7 +18,13 @@ data is:
 * Add each chemical dictionary to a chemical list.
 * Put chemical list into search function to calculate the pH of the mixture.
 Set printer=1 to print the result.
-* Run main.py
+* Run main.py  
+ 
+Run example1.py to see a demonstration of the pH calculation for a phosphate buffer being mixed 
+with hydrochloric acid.  
+
+Run example2.py to see a demonstration of plotting the pH of the titration of 1M H<sub>3</sub>PO<sub>4</sub>
+with 1M NaOH.
 
 ## Formatting chemical dictionary
 * "species_names" (list[str]) contains names for the conjugate acids and bases in a series of deprotonations.
