@@ -2,9 +2,12 @@ import numpy as np
 from buffer import search
 import matplotlib.pyplot as plt
 
+# Titration example: run this script to plot the pH curve of the titration of 1M H3PO4 with 1M NaOH.
+# The result closely matches the literature:
+# https://www.researchgate.net/profile/Walter-Cisneros-Yupanqui/post/What_happens_when_the_buffer_capacity_is_exceeded_in_the_case_of_PBS_pH742/attachment/5f4a083fed60840001c96a8d/AS%3A929776059568128%401598687295154/image/Tritation+curve+of+phosphoric+acid+3.jpg
 
-def titration_example(precision):
-    """Hard-coded example of titration of 1M H3PO4 with 1M OH-"""
+def titration_example(precision=0.000001):
+    """Hard-coded example of titration of 1M H3PO4 with 1M NaOH"""
     x_list = np.linspace(0, 3, 101)
     y_list = []
 
@@ -32,3 +35,5 @@ def titration_example(precision):
     plt.xlabel("1M NaOH (L)")
     plt.ylabel("pH")
     plt.show()
+
+titration_example()
