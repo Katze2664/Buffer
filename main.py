@@ -55,15 +55,15 @@ chemical_list3 = [phosphoric_dict, hydrochloric_dict, hydroxide_dict]
 chemical_list4 = [phosphoric_dict, acetic_dict]
 
 print("Chemical list 1: just phosphate buffer")
-print("pH", round(search(precision, chemical_list1), 2))
+search(chemical_list1, printer=1)
 
 print("Chemical list 2: phosphate buffer plus hydrochloric acid")
-print("pH", round(search(precision, chemical_list2), 2))
+search(chemical_list2, printer=1)
 
 print("Chemical list 3: phosphate buffer plus hydrochloric acid plus hydroxide")
-print("pH", round(search(precision, chemical_list3), 2))
+search(chemical_list3, printer=1)
 
-print("Chemical list 3: phosphate buffer plus acetic acid")
-print("pH", round(search(precision, chemical_list4), 2))
+print("Chemical list 4: phosphate buffer plus acetic acid")
+search(chemical_list4, printer=1)
 
 titration_example(precision)

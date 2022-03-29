@@ -117,7 +117,7 @@ def acidbase_objects_list(chemical_list):
     return acidbase_list
 
 
-def search(precision, chemical_list):
+def search(chemical_list, printer=0, precision=0.000001, rounded=2):
 
     acidBases = acidbase_objects_list(chemical_list)
 
@@ -148,4 +148,8 @@ def search(precision, chemical_list):
         guess = upperbound - (diff_upper / gradient)
         diff_guess = diff(guess, acidBases)
 
-    return guess
+    result = round(guess, rounded)
+    if printer != 0:
+        print("pH = ", result)
+
+    return result

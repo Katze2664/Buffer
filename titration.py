@@ -24,7 +24,7 @@ def titration_example(precision):
 
         chemical_list = [phosphoric_dict, hydroxide_dict]
 
-        pH = search(precision, chemical_list)
+        pH = search(chemical_list, rounded=3)
         y_list.append(pH)
 
     plt.scatter(x_list, y_list, marker=".")
