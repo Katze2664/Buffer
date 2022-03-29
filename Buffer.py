@@ -62,7 +62,7 @@ def release(pH_guess, acidbase, volume_total, printer = 0):
     protons = range(len(acidbase.species_names)-1, -1, -1)
 
     diluted_conc = []
-    for conc in range(len(acidbase.initial_conc)):
+    for conc in acidbase.initial_conc:
         diluted_conc.append(conc * acidbase.volume / volume_total)
 
     total_conc = 0
