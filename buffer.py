@@ -29,71 +29,71 @@ class AcidBase:
                 exit()
 
 
-def release(pH_guess, acidbase, volume_total, printer=0):
+def release(pH_guess, acidbase, volume_total, printer=False):
     protons = list(range(len(acidbase.species_names) - 1, -1, -1))
-    if printer == 1:
+    if printer:
         print("protons", protons)
 
     diluted_conc = []
     for conc in acidbase.initial_conc:
         diluted_conc.append(conc * acidbase.volume / volume_total)
-    if printer == 1:
+    if printer:
         print("diluted conc", diluted_conc)
 
     total_conc = sum(diluted_conc)
-    if printer == 1:
+    if printer:
         print("total conc", total_conc)
 
     base_acid = []
     for i in range(len(diluted_conc) - 1):
         base_acid.append(10 ** (pH_guess - acidbase.pKa[i]))
-    if printer == 1:
+    if printer:
         print("base_acid", base_acid)
 
     ratios = [1]
     for i in base_acid:
         ratios.append(ratios[-1] * i)
-    if printer == 1:
+    if printer:
         print("ratios", ratios)
 
     ratio_sum = sum(ratios)
-    if printer == 1:
+    if printer:
         print("ratio_sum", ratio_sum)
 
     equilibrium_conc = []
     for ratio in ratios:
         equilibrium_conc.append(total_conc * ratio / ratio_sum)
-    if printer == 1:
+    if printer:
         print("equilibrium conc", equilibrium_conc)
 
     diff_conc = []
     for i in range(len(diluted_conc)):
         diff_conc.append(equilibrium_conc[i] - diluted_conc[i])
-    if printer == 1:
+    if printer:
         print("diff conc", diff_conc)
 
     H_released = 0
     for i in range(len(diff_conc)):
         H_released += -1 * diff_conc[i] * protons[i]
-    if printer == 1:
+    if printer:
         print("H released", H_released)
     return H_released
 
 
-def pH_calc(H_released, printer=0):
+def pH_calc(H_released, printer=False):
     K_w = 1e-14
     OH_conc = (Decimal(-1 * H_released) + Decimal.sqrt(
         Decimal(H_released) * Decimal(H_released) + 4 * Decimal(K_w))) / 2
     H_conc = Decimal(OH_conc) + Decimal(H_released)
     pH = Decimal(-1) * Decimal.log10(Decimal(H_conc))
-    if printer == 1:
+    if printer:
         print("OH conc", OH_conc)
         print("H conc", H_conc)
         print("Calculated pH: ", pH)
     return float(pH)
 
 
-def diff(pH_guess, acidBases, printer=0):
+def diff(pH_guess, acidBases, printer=False):
     volume_total = 0
     for acidBase in acidBases:
         volume_total += acidBase.volume
@@ -117,7 +117,7 @@ def acidbase_objects_list(chemical_list):
     return acidbase_list
 
 
-def search(chemical_list, printer=0, precision=0.000001, rounded=2):
+def search(chemical_list, printer=False, precision=0.000001, rounded=2):
 
     acidBases = acidbase_objects_list(chemical_list)
 
@@ -149,7 +149,7 @@ def search(chemical_list, printer=0, precision=0.000001, rounded=2):
         diff_guess = diff(guess, acidBases)
 
     result = round(guess, rounded)
-    if printer != 0:
+    if printer:
         print("pH = ", result)
 
     return result

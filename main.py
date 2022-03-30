@@ -39,4 +39,4 @@ chemical_list = [phosphoric_dict, hydrochloric_dict, hydroxide_dict, acetic_dict
 
 # Pass the chemical list into the search function to calculate the pH.
 print("Phosphate + Hydrochloric + Hydroxide + Acetic")
-search(chemical_list, printer=1, precision=precision)
+search(chemical_list, printer=True, precision=precision)
